@@ -1,11 +1,16 @@
 class ProductsController < ApplicationController
-  before_action :set_category
+  before_action :set_category, except:[:index]
   before_action :set_product, only: [:show, :edit, :update, :destroy]
 
   # GET categories/1/products
   # GET categories/1/products.json
   def index
-    @products = @category.products
+    if params[:category_id]
+      set_category
+      @products = @category.products
+    else
+      @products = Product.all
+    end
   end
 
   # GET categories/1/products/1
@@ -27,10 +32,8 @@ class ProductsController < ApplicationController
 
     respond_to do |format|
       if @product.save
-        format.html { redirect_to [@product.category, @product], notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: [@product.category, @product] }
       else
-        format.html { render :new }
         format.json { render json: @category.errors, status: :unprocessable_entity }
       end
     end
@@ -40,10 +43,8 @@ class ProductsController < ApplicationController
   def update
     respond_to do |format|
       if @product.update_attributes(product_params)
-        format.html { redirect_to [@product.category, @product], notice: 'Product was successfully updated.'}
         format.json { render :show, status: :ok, location: [@product.category, @product] }
       else
-        format.html { render :edit }
         format.json { render json: @category.errors, status: :unprocessable_entity }
       end
     end
@@ -53,7 +54,6 @@ class ProductsController < ApplicationController
   def destroy
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to categories_products_url(@category), notice: 'Product was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

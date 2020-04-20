@@ -1,16 +1,8 @@
-import React from "react"
-import PropTypes from "prop-types"
-class Categories extends React.Component {
-  render () {
-    return (
-      <React.Fragment>
-        Categories: {this.props.categories}
-      </React.Fragment>
-    );
-  }
-}
+import React from "react";
+import axios from "axios";
 
-Categories.propTypes = {
-  categories: PropTypes.array
+const Categories = (props) => {
+  return <h1>Categories:</h1>;
 };
-export default Categories
+
+export default Categories;

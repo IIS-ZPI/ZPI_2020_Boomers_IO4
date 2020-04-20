@@ -1,16 +1,22 @@
-import React from "react"
-import PropTypes from "prop-types"
-class Products extends React.Component {
-  render () {
-    return (
-      <React.Fragment>
-        Products: {this.props.products}
-      </React.Fragment>
-    );
-  }
-}
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-Products.propTypes = {
-  products: PropTypes.array
+const Products = (props) => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("")
+      .then(function (response) {
+        // handle success
+        console.log(response);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      });
+  }, []);
+  return <h1>Products</h1>;
 };
-export default Products
+
+export default Products;
