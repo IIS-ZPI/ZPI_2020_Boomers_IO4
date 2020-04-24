@@ -1,1 +1,25 @@
 @import "~bootstrap/scss/bootstrap";
+
+
+.main-container {
+    max-width: 100%;
+    height: 90vh;
+    margin: 0px;
+    padding: 0px;
+  }
+
+.jumboman {
+    margin: 1%;
+    width: 98%;
+    padding:0px;
+    height:98%;
+    border:1px;
+    background-color: white;
+}
+
+.list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
+    z-index:2;
+    color:#ffffff;
+    background-color:#362525;
+    border-color:#2196f3;
+  }
