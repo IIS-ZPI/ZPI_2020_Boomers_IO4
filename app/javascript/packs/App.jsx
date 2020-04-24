@@ -6,7 +6,7 @@ import NavBar from "../components/NavBar";
 import Categories from "../components/Categories";
 import Products from "../components/Products";
 import Container from "react-bootstrap/Container";
-import Calculator from "../components/Calculator";
+import Calculator from "../components/Calculator/Calculator";
 
 const App = (props) => {
   const [tab, setTab] = useState("calculator");
