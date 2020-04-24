@@ -12,6 +12,9 @@ const NavBar = ({ selected, setSelected }) => {
         onSelect={(selectedKey) => setSelected(selectedKey)}
       >
         <Nav.Item>
+          <Nav.Link eventKey="calculator">Calculator</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
           <Nav.Link eventKey="categories">Categories</Nav.Link>
         </Nav.Item>
         <Nav.Item>
@@ -22,4 +25,4 @@ const NavBar = ({ selected, setSelected }) => {
   );
 };
 
-export default NavBar;
+export default NavBar; 
