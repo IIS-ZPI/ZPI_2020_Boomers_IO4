@@ -4,7 +4,7 @@ import Nav from "react-bootstrap/Nav";
 
 const NavBar = ({ selected, setSelected }) => {
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar className="navigation"  variant="dark" >
       <Navbar.Brand href="#home">USA Selling App</Navbar.Brand>
       <Nav
         activeKey={selected}

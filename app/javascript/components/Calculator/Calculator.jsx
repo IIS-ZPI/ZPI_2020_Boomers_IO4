@@ -10,11 +10,21 @@ import FormControl from "react-bootstrap/FormControl";
 const Calculator = (props) => {
   const [categories, setCategories] = useState(null);
   const [states, setStates] = useState(null);
+  const [products, setProducts] = useState(null);
   const [tool, setTool] = useState(1);
   const [searchTermStates, setSearchTermStates] = useState("");
   const [searchResultsStates, setSearchResultsStates] = useState(null);
   const [searchTermCategories, setSearchTermCategories] = useState("");
   const [searchResultsCategories, setSearchResultsCategories] = useState(null);
+  const [searchTermProducts, setSearchTermProducts] = useState("");
+  const [searchResultsProducts, setSearchResultsProducts] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [product, setProduct] = useState(null);
+  const [state, setState] = useState(null);
+  const [amountOfProducts, setAmountOfProducts] = useState(0);
+
+
+
   
   useEffect(() => {
     axios
@@ -25,6 +35,17 @@ const Calculator = (props) => {
       })
       .catch(function (error) {
         setCategories([]);
+        console.log(error);
+      });
+
+      axios
+      .get("/products")
+      .then(function (response) {
+        setProducts(response.data);
+        console.log(response);
+      })
+      .catch(function (error) {
+        setProducts([]);
         console.log(error);
       });
     
@@ -54,7 +75,9 @@ const Calculator = (props) => {
   }, []);
 
   useEffect(() => {
+
     if (categories) {
+    setCategory(categories[0]);
       const results = categories.filter(
         (category) =>
         category.id.toString().includes(searchTermCategories.toLowerCase()) ||
@@ -74,6 +97,18 @@ const Calculator = (props) => {
       setSearchResultsStates(results);
     }
   }, [searchTermStates, states]);
+
+  useEffect(() => {
+    if (products) {
+      const results = products.filter(
+        (product) =>
+        product.category_id == category.id &&
+        (product.id.toString().includes(searchTermProducts.toLowerCase()) ||
+        product.name.toLowerCase().includes(searchTermProducts.toLowerCase()))
+      );
+      setSearchResultsProducts(results);
+    }
+  }, [searchTermProducts, products, category]);
 
   useEffect(() => {
     console.log(categories);
@@ -103,14 +138,16 @@ const Calculator = (props) => {
                         onSelect={(k) => setTool(k)}
                     >
                         {searchResultsStates.map((state) => (
-                        <ListGroup.Item action key={state.id} eventKey={state.id}>
+                        <ListGroup.Item action key={state.id} eventKey={state.id} onClick={() => {
+                          setState(state);
+                        }}>
                         {state.name}
                         </ListGroup.Item>
                         ))}
                     </ListGroup>
                     )}
                 </Col>
-                <Col className="columns inside">
+                <Col className="columns">
                 <FormControl
                         style = {{width: "98%"}}
                         autoFocus
@@ -121,13 +158,15 @@ const Calculator = (props) => {
                     />
                     {categories && searchResultsCategories && (
                     <ListGroup
-                        style={{overflowY: "auto",
+                        style={{overflowY: "scroll",
                         maxHeight: "82vh",}}
                         defaultActiveKey={searchResultsCategories[0].id}
-                        onSelect={(k) => setTool(k)}
+                        onSelect={(k) => setTool(k) }
                     >
                         {searchResultsCategories.map((category) => (
-                        <ListGroup.Item action key={category.id} eventKey={category.id}>
+                        <ListGroup.Item action key={category.id} eventKey={category.id} onClick={() => {
+                          setCategory(category);
+                        }}>
                         {category.name}
                         </ListGroup.Item>
                         ))}
@@ -135,13 +174,50 @@ const Calculator = (props) => {
                     )}
                 </Col>
                 <Col className="columns">
-                Column3
+                <FormControl
+                        style = {{width: "98%"}}
+                        autoFocus
+                        className="mx-3 my-2 w-auto"
+                        placeholder="Type to filter..."
+                        onChange={(e) => setSearchTermProducts(e.target.value)}
+                        value={searchTermProducts}
+                    />
+                    {products && searchResultsProducts && (
+                    <ListGroup
+                        style={{overflowY: "scroll",
+                        maxHeight: "82vh",}}
+                        defaultActiveKey={searchResultsProducts[0].id}
+                        onSelect={(k) => setTool(k)}
+                    >
+                        {searchResultsProducts.map((product) => (
+                        <ListGroup.Item action key={product.id} eventKey={product.id} onClick={() => {
+                          setProduct(product);
+                        }}>
+                        {product.name}
+                        </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                    )}
                 </Col>
                 </Row>
             </Col>
-            <Col>
-            Column4
-            
+            <Col className="priceColumn">
+            Amount of Products
+            <FormControl
+                        style = {{width: "98%"}}
+                        autoFocus
+                        className="mx-3 my-2 w-auto"
+                        placeholder="Amount"
+                        onChange={(e) => setAmountOfProducts(e.target.value)}
+                        value={amountOfProducts}
+                    />
+                    <br/>
+            <Jumbotron className="jumboman-price">
+                  <h1>Price</h1>
+                  <br/>
+                  {product && state && (<p>Price of {amountOfProducts} {product.name}s in {state.name} is {amountOfProducts*product.price} dollars</p>)}
+                      
+            </Jumbotron>
             </Col>
           </Row>
         </Container>
