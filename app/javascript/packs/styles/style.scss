@@ -18,6 +18,12 @@
     border-width: 1px;
 }
 
+.jumboman-price {
+  height: 70vh;
+  padding-top:5px;
+
+}
+
 .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
     z-index:2;
     color:#ffffff;
@@ -37,4 +43,9 @@
 
 .priceColumn{
   font-size: 32px;
+}
+
+.navigation{
+  background-color:#362525;
+
 }

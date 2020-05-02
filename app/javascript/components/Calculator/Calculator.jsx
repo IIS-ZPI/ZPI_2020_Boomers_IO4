@@ -21,6 +21,7 @@ const Calculator = (props) => {
   const [category, setCategory] = useState(null);
   const [product, setProduct] = useState(null);
   const [state, setState] = useState(null);
+  const [amountOfProducts, setAmountOfProducts] = useState(0);
 
 
 
@@ -206,10 +207,17 @@ const Calculator = (props) => {
                         style = {{width: "98%"}}
                         autoFocus
                         className="mx-3 my-2 w-auto"
-                        placeholder="Type to filter..."
-                        onChange={(e) => setSearchTermProducts(e.target.value)}
-                        value={searchTermProducts}
+                        placeholder="Amount"
+                        onChange={(e) => setAmountOfProducts(e.target.value)}
+                        value={amountOfProducts}
                     />
+                    <br/>
+            <Jumbotron className="jumboman-price">
+                  <h1>Price</h1>
+                  <br/>
+                  {product && state && (<p>Price of {amountOfProducts} {product.name}s in {state.name} is {amountOfProducts*product.price} dollars</p>)}
+                      
+            </Jumbotron>
             </Col>
           </Row>
         </Container>
