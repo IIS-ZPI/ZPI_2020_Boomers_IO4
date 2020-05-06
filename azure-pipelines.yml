@@ -9,8 +9,10 @@ steps:
 - script: echo Hello, world!
   displayName: 'Nothing to do yet'
 
-- task: PushToHeroku@0
+- task: PowerShell@2
   inputs:
-    ApiKey: 'f0e0557f-070e-4027-9e36-c259ce2ed240'
-    AppName: 'boomers-app'
-    PushRoot: '.'
+    targetType: 'inline'
+    script: |
+      git checkout $(Build.SourceBranchName)
+      git remote add heroku https://heroku:$(pat)@git.heroku.com/boomers-app.git
+      git push heroku $(Build.SourceBranchName)
