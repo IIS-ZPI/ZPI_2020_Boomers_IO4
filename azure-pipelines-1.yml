@@ -10,17 +10,17 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: UseRubyVersion@0
-  inputs:
-    versionSpec: '>= 2.5'
+# - task: UseRubyVersion@0
+#   inputs:
+#     versionSpec: '>= 2.5'
 
-- script: |
-    gem install bundler
-    bundle install --retry=3 --jobs=4
-  displayName: 'bundle install'
+# - script: |
+#     gem install bundler
+#     bundle install --retry=3 --jobs=4
+#   displayName: 'bundle install'
 
-# - script: bundle exec rake
-#   displayName: 'bundle exec rake'
+# # - script: bundle exec rake
+  # displayName: 'bundle exec rake'
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
