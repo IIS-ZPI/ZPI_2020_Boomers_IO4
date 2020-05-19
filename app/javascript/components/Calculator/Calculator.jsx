@@ -6,6 +6,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 import FormControl from "react-bootstrap/FormControl";
+import InputGroup from "react-bootstrap/InputGroup";
+import Form from "react-bootstrap/Form"
 
 const Calculator = (props) => {
   const [categories, setCategories] = useState(null);
@@ -21,7 +23,11 @@ const Calculator = (props) => {
   const [category, setCategory] = useState(null);
   const [product, setProduct] = useState(null);
   const [state, setState] = useState(null);
-  const [amountOfProducts, setAmountOfProducts] = useState(0);
+  const [amountOfProducts, setAmountOfProducts] = useState(1);
+  const [priceOfSelling, setPriceOfSelling] = useState(0);
+  const [costOfLogistics, setCostOfLogistics] = useState(0);
+  const [sellingPriceNetto, setSellingPriceNetto] = useState(0);
+  const [buyingPriceBrutto, setBuyingPriceBrutto] = useState(0);
 
 
 
@@ -61,8 +67,10 @@ const Calculator = (props) => {
           var html = parser.parseFromString(html_code, "text/html");
           var tables = html.querySelectorAll(".wikitable");
           var results = [];
+          console.log(tables[1].children[0].children);
           for (let i = 1; i < 54; i++) { 
-            results.push({id: i, name: tables[1].children[0].children[i].children[0].innerText}); 
+            results.push({id: i, name: tables[1].children[0].children[i].children[0].innerText,
+            tax: tables[1].children[0].children[i].children[1].innerText.replace(/\D+$/g, "")}); 
           } 
         console.log(results);
         setStates(results);
@@ -111,8 +119,12 @@ const Calculator = (props) => {
   }, [searchTermProducts, products, category]);
 
   useEffect(() => {
-    console.log(categories);
-  }, [categories]);
+    if(state && product)
+    {
+      setSellingPriceNetto((priceOfSelling-(priceOfSelling*state.tax/100))*amountOfProducts);
+      setBuyingPriceBrutto((product.price+(product.price*state.tax/100))*amountOfProducts);
+    }
+  }, [amountOfProducts, priceOfSelling, costOfLogistics]);
 
 
   return (
@@ -202,21 +214,98 @@ const Calculator = (props) => {
                 </Row>
             </Col>
             <Col className="priceColumn">
-            Amount of Products
-            <FormControl
-                        style = {{width: "98%"}}
+            <Jumbotron className="jumboman-price">
+              <Row>
+                <Col>
+                Product: {product ? product.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                </Col>
+                <Col>
+                Category: {category ? category.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"} {"\u00a0\u00a0\u00a0"} 
+                </Col>
+                <Col>
+                Taxes: {state ? state.tax+"%" : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                </Col>
+
+
+              </Row>
+              <hr />
+              <Row xs={4} md={6} lg={8}>
+                <Col>Amount (pieces):
+                </Col>
+                <Col >
+                  <FormControl
                         autoFocus
                         className="mx-3 my-2 w-auto"
                         placeholder="Amount"
                         onChange={(e) => setAmountOfProducts(e.target.value)}
                         value={amountOfProducts}
                     />
-                    <br/>
-            <Jumbotron className="jumboman-price">
-                  <h1>Price</h1>
-                  <br/>
-                  {product && state && (<p>Price of {amountOfProducts} {product.name}s in {state.name} is {amountOfProducts*product.price} dollars</p>)}
-                      
+                </Col>
+              </Row>
+              <Row xs={4} md={6} lg={8}>
+                <Col>Price of selling (zł):
+                </Col>
+                <Col >
+                  <FormControl
+                        autoFocus
+                        className="mx-3 my-2 w-auto"
+                        placeholder="price"
+                        onChange={(e) => setPriceOfSelling(e.target.value)}
+                        value={priceOfSelling}
+                    />
+                </Col>
+              </Row>
+              <Row xs={4} md={6} lg={8}>
+                <Col>Cost of logistics (zł):
+                </Col>
+                <Col >
+                  <FormControl
+                        autoFocus
+                        className="mx-3 my-2 w-auto"
+                        placeholder="price"
+                        onChange={(e) => setCostOfLogistics(e.target.value)}
+                        value={costOfLogistics}
+                    />
+                </Col>
+              </Row>
+              <hr />
+              <Row>
+                <Col>
+                Started price(netto): {product ? product.price +"zł * "+ amountOfProducts +" pieces = "+ product.price*amountOfProducts +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                Started price(brutto): {product && state ? "( " + product.price +"zł + ( " + product.price +"zł * " + state.tax + "% )) * " + amountOfProducts +" pieces = "+ 
+                buyingPriceBrutto.toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>
+              <hr />
+              <Row>
+                <Col>
+                Selling price(netto): {product && state ? "( " + priceOfSelling +"zł - ( " + priceOfSelling +"zł * " + state.tax + "% )) * " + amountOfProducts +" pieces = "+ 
+                sellingPriceNetto.toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>
+              
+              <Row>
+                <Col>
+                Selling price(brutto): {product ? priceOfSelling +"zł * "+ amountOfProducts +" = "+ (priceOfSelling*amountOfProducts).toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>
+              <hr />
+              <Row>
+                <Col>
+                Profit: {product ? sellingPriceNetto.toFixed(2) +"zł - "+ costOfLogistics + "zł - "
+                 + buyingPriceBrutto.toFixed(2)  +"zł = "
+                 + (sellingPriceNetto-buyingPriceBrutto-costOfLogistics).toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>                 
             </Jumbotron>
             </Col>
           </Row>
