@@ -124,7 +124,7 @@ const Calculator = (props) => {
       setSellingPriceNetto((priceOfSelling-(priceOfSelling*state.tax/100))*amountOfProducts);
       setBuyingPriceBrutto((product.price+(product.price*state.tax/100))*amountOfProducts);
     }
-  }, [amountOfProducts, priceOfSelling, costOfLogistics]);
+  }, [amountOfProducts, priceOfSelling, costOfLogistics, state]);
 
 
   return (
