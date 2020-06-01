@@ -66,14 +66,7 @@ const Calculator = (props) => {
           var parser = new DOMParser();
           var html = parser.parseFromString(html_code, "text/html");
           var tables = html.querySelectorAll(".wikitable");
-          var results = [];
-          console.log(tables[1].children[0].children);
-          for (let i = 1; i < 54; i++) { 
-            results.push({id: i, name: tables[1].children[0].children[i].children[0].innerText,
-            tax: tables[1].children[0].children[i].children[1].innerText.replace(/\D+$/g, "")}); 
-          } 
-        console.log(results);
-        setStates(results);
+          parseTable(tables);
         })
 
 
@@ -107,14 +100,22 @@ const Calculator = (props) => {
   }, [searchTermStates, states]);
 
   useEffect(() => {
-    if (products) {
+    if (products && category) {
       const results = products.filter(
         (product) =>
         product.category_id == category.id &&
         (product.id.toString().includes(searchTermProducts.toLowerCase()) ||
         product.name.toLowerCase().includes(searchTermProducts.toLowerCase()))
       );
-      setSearchResultsProducts(results);
+      if(results.length)
+      {
+        setSearchResultsProducts(results);
+
+      }else
+      {
+        setSearchResultsProducts(null);
+
+      }
     }
   }, [searchTermProducts, products, category]);
 
@@ -125,6 +126,21 @@ const Calculator = (props) => {
       setBuyingPriceBrutto((product.price+(product.price*state.tax/100))*amountOfProducts);
     }
   }, [amountOfProducts, priceOfSelling, costOfLogistics, state]);
+
+
+  const parseTable = (tables) => 
+  {
+    var results = [];
+    console.log(tables[1].children[0].children);
+    for (let i = 1; i < 54; i++) { 
+      results.push({id: i, name: tables[1].children[0].children[i].children[0].innerText,
+      tax: tables[1].children[0].children[i].children[1].innerText.replace(/\D+$/g, "")}); 
+    }
+    console.log(results);
+    setStates(results);
+
+  };
+
 
 
   return (
@@ -217,15 +233,18 @@ const Calculator = (props) => {
             <Jumbotron className="jumboman-price">
               <Row>
                 <Col>
-                Product: {product ? product.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                State: {state ? state.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                </Col>
+                
+                <Col>
+                Taxes: {state ? state.tax+"%" : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 </Col>
                 <Col>
                 Category: {category ? category.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"} {"\u00a0\u00a0\u00a0"} 
                 </Col>
                 <Col>
-                Taxes: {state ? state.tax+"%" : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                Product: {product ? product.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 </Col>
-
 
               </Row>
               <hr />
