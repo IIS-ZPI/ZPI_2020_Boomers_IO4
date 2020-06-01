@@ -28,7 +28,8 @@ const Calculator = (props) => {
   const [costOfLogistics, setCostOfLogistics] = useState(0);
   const [sellingPriceNetto, setSellingPriceNetto] = useState(0);
   const [buyingPriceBrutto, setBuyingPriceBrutto] = useState(0);
-
+  const [taxValue, setTaxValue] = useState(null);
+  const [taxVal, setTaxVal] = useState(0);
 
 
   
@@ -122,19 +123,91 @@ const Calculator = (props) => {
   useEffect(() => {
     if(state && product)
     {
-      setSellingPriceNetto((priceOfSelling-(priceOfSelling*state.tax/100))*amountOfProducts);
-      setBuyingPriceBrutto((product.price+(product.price*state.tax/100))*amountOfProducts);
+      for (var key in state.categories) {
+        if (!state.categories.hasOwnProperty(key)) continue;
+        
+        if(key == category.name)
+        {
+          console.log(state.categories[key]);
+          if(state.categories[key] == "blue")
+          {
+            setTaxVal(state.tax);
+            
+          }else if(state.categories[key] == "green")
+          {
+            setTaxVal(0);
+          }else if(state.categories[key] == "red")
+          {
+            setTaxVal(0);
+          }
+          setSellingPriceNetto((priceOfSelling-(priceOfSelling*taxVal/100))*amountOfProducts);
+          setBuyingPriceBrutto((product.price+(product.price*taxVal/100))*amountOfProducts);
+          break;
+        }
+      }
+      
     }
-  }, [amountOfProducts, priceOfSelling, costOfLogistics, state]);
+    if(state && category)
+    {
+      for (var key in state.categories) {
+        if (!state.categories.hasOwnProperty(key)) continue;
+        
+        if(key == category.name)
+        {
+          
+          if(state.categories[key] == "blue")
+          {
+            setTaxValue(state.tax + "%");
+          }else if(state.categories[key] == "green")
+          {
+            setTaxValue("Exempt from taxes");
+          }else if(state.categories[key] == "red")
+          {
+            setTaxValue("No taxes");
+          }
+          break;
+        }
+      }
+    }
+  }, [amountOfProducts, priceOfSelling, costOfLogistics, state, category]);
+
+
+
+
 
 
   const parseTable = (tables) => 
   {
     var results = [];
-    console.log(tables[1].children[0].children);
     for (let i = 1; i < 54; i++) { 
+      var tempCateg = [];
+      for(let j = 3; j<9;j++)
+      {
+        if(tables[1].children[0].children[i].children[j])
+        {
+          if(tables[1].children[0].children[i].children[j].style.backgroundColor =="rgb(119, 136, 255)")
+          {
+            tempCateg.push("blue");
+            
+          }else if(tables[1].children[0].children[i].children[j].style.backgroundColor =="rgb(246, 43, 15)")
+          {
+            tempCateg.push("red");
+          }else if(tables[1].children[0].children[i].children[j].style.backgroundColor =="rgb(78, 224, 78)")
+          {
+            tempCateg.push("green");
+          }
+
+        }
+        
+      }
+      var categoriesArray = {'Groceries':tempCateg[0], "Prepared food": tempCateg[1],'Prescription drug':tempCateg[2], "Non-prescription drug": tempCateg[3],'Clothing':tempCateg[4], "Intagibles": tempCateg[5]};
+      
+
+
+
       results.push({id: i, name: tables[1].children[0].children[i].children[0].innerText,
-      tax: tables[1].children[0].children[i].children[1].innerText.replace(/\D+$/g, "")}); 
+      tax: tables[1].children[0].children[i].children[1].innerText.replace(/\D+$/g, ""), 
+      categories: categoriesArray}); 
     }
     console.log(results);
     setStates(results);
@@ -237,7 +310,7 @@ const Calculator = (props) => {
                 </Col>
                 
                 <Col>
-                Taxes: {state ? state.tax+"%" : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                Taxes: {state ? taxValue : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 </Col>
                 <Col>
                 Category: {category ? category.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"} {"\u00a0\u00a0\u00a0"} 
@@ -296,7 +369,7 @@ const Calculator = (props) => {
               </Row>
               <Row>
                 <Col>
-                Started price(brutto): {product && state ? "( " + product.price +"zł + ( " + product.price +"zł * " + state.tax + "% )) * " + amountOfProducts +" pieces = "+ 
+                Started price(brutto): {product && state ? "( " + product.price +"zł + ( " + product.price +"zł * " + taxVal + "% )) * " + amountOfProducts +" pieces = "+ 
                 buyingPriceBrutto.toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 
                 </Col>
@@ -304,7 +377,7 @@ const Calculator = (props) => {
               <hr />
               <Row>
                 <Col>
-                Selling price(netto): {product && state ? "( " + priceOfSelling +"zł - ( " + priceOfSelling +"zł * " + state.tax + "% )) * " + amountOfProducts +" pieces = "+ 
+                Selling price(netto): {product && state ? "( " + priceOfSelling +"zł - ( " + priceOfSelling +"zł * " + taxVal + "% )) * " + amountOfProducts +" pieces = "+ 
                 sellingPriceNetto.toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 
                 </Col>
