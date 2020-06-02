@@ -128,14 +128,35 @@ const Calculator = (props) => {
         
         if(key == category.name)
         {
-          console.log(state.categories[key]);
           if(state.categories[key] == "blue")
           {
-            setTaxVal(state.tax);
+            if(state.categories[key+"N"] != "")
+            {
+              setTaxVal(parseFloat(state.categories[key+"N"]));
+            }else
+            {
+              console.log(state.tax);
+              setTaxVal(state.tax);
+            }
+            
             
           }else if(state.categories[key] == "green")
           {
-            setTaxVal(0);
+            if(state.categories[key+"N"] != "")
+            {
+
+              if(parseFloat(state.categories[key+"N"])<priceOfSelling)
+              {
+                setTaxVal(state.tax);
+              }else
+              {
+                setTaxVal(0);
+              }
+              
+            }else
+            {
+              setTaxVal(0);
+            }
           }else if(state.categories[key] == "red")
           {
             setTaxVal(0);
@@ -160,6 +181,7 @@ const Calculator = (props) => {
             setTaxValue(state.tax + "%");
           }else if(state.categories[key] == "green")
           {
+
             setTaxValue("Exempt from taxes");
           }else if(state.categories[key] == "red")
           {
@@ -169,7 +191,7 @@ const Calculator = (props) => {
         }
       }
     }
-  }, [amountOfProducts, priceOfSelling, costOfLogistics, state, category]);
+  }, [state, category, amountOfProducts, priceOfSelling, costOfLogistics]);
 
 
 
