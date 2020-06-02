@@ -196,11 +196,16 @@ const Calculator = (props) => {
           {
             tempCateg.push("green");
           }
-
+          tempCateg.push(tables[1].children[0].children[i].children[j].innerText.replace(/[^\d.]/g, ""));
         }
         
       }
-      var categoriesArray = {'Groceries':tempCateg[0], "Prepared food": tempCateg[1],'Prescription drug':tempCateg[2], "Non-prescription drug": tempCateg[3],'Clothing':tempCateg[4], "Intagibles": tempCateg[5]};
+      var categoriesArray = {'Groceries':tempCateg[0], "GroceriesN":tempCateg[1], 
+      "Prepared food": tempCateg[2], "Prepared foodN":tempCateg[3],
+      'Prescription drug':tempCateg[4], 'Prescription drugN':tempCateg[5],
+      "Non-prescription drug": tempCateg[6], "Non-prescription drugN": tempCateg[7],
+      'Clothing':tempCateg[8], 'ClothingN':tempCateg[9],
+      "Intagibles": tempCateg[10], "IntagiblesN": tempCateg[11]};
       
 
 
