@@ -69,11 +69,6 @@ const Calculator = (props) => {
           var tables = html.querySelectorAll(".wikitable");
           parseTable(tables);
         })
-
-
-
-
-
   }, []);
 
   useEffect(() => {
@@ -253,7 +248,7 @@ const Calculator = (props) => {
                     <FormControl
                         style = {{width: "98%"}}
                         autoFocus
-                        className="mx-3 my-2 w-auto"
+                        className="mx-3 my-2 w-auto shadow"
                         placeholder="Type to filter..."
                         onChange={(e) => setSearchTermStates(e.target.value)}
                         value={searchTermStates}
@@ -279,7 +274,7 @@ const Calculator = (props) => {
                 <FormControl
                         style = {{width: "98%"}}
                         autoFocus
-                        className="mx-3 my-2 w-auto"
+                        className="mx-3 my-2 w-auto shadow"
                         placeholder="Type to filter..."
                         onChange={(e) => setSearchTermCategories(e.target.value)}
                         value={searchTermCategories}
@@ -305,7 +300,7 @@ const Calculator = (props) => {
                 <FormControl
                         style = {{width: "98%"}}
                         autoFocus
-                        className="mx-3 my-2 w-auto"
+                        className="mx-3 my-2 w-auto shadow"
                         placeholder="Type to filter..."
                         onChange={(e) => setSearchTermProducts(e.target.value)}
                         value={searchTermProducts}
