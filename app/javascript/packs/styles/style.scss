@@ -18,9 +18,20 @@
     border-width: 1px;
 }
 
+.jumboman2 {
+  margin-left: 20%;
+  margin-right: 20%;
+  width: 60%;
+  padding-top:1%;
+  height:100%;
+  background-color: rgb(233, 230, 230);
+}
+
 .jumboman-price {
-  height: 70vh;
-  padding-top:5px;
+  height: 85vh;
+  padding-top:10px;
+  margin-top: 10px;
+  font-weight: bold;
 
 }
 
@@ -42,7 +53,7 @@
 }
 
 .priceColumn{
-  font-size: 32px;
+  font-size: 20px;
 }
 
 .navigation{

@@ -6,6 +6,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 import FormControl from "react-bootstrap/FormControl";
+import InputGroup from "react-bootstrap/InputGroup";
+import Form from "react-bootstrap/Form"
 
 const Calculator = (props) => {
   const [categories, setCategories] = useState(null);
@@ -21,8 +23,13 @@ const Calculator = (props) => {
   const [category, setCategory] = useState(null);
   const [product, setProduct] = useState(null);
   const [state, setState] = useState(null);
-  const [amountOfProducts, setAmountOfProducts] = useState(0);
-
+  const [amountOfProducts, setAmountOfProducts] = useState(1);
+  const [priceOfSelling, setPriceOfSelling] = useState(0);
+  const [costOfLogistics, setCostOfLogistics] = useState(0);
+  const [sellingPriceNetto, setSellingPriceNetto] = useState(0);
+  const [buyingPriceBrutto, setBuyingPriceBrutto] = useState(0);
+  const [taxValue, setTaxValue] = useState(null);
+  const [taxVal, setTaxVal] = useState(0);
 
 
   
@@ -60,18 +67,8 @@ const Calculator = (props) => {
           var parser = new DOMParser();
           var html = parser.parseFromString(html_code, "text/html");
           var tables = html.querySelectorAll(".wikitable");
-          var results = [];
-          for (let i = 1; i < 54; i++) { 
-            results.push({id: i, name: tables[1].children[0].children[i].children[0].innerText}); 
-          } 
-        console.log(results);
-        setStates(results);
+          parseTable(tables);
         })
-
-
-
-
-
   }, []);
 
   useEffect(() => {
@@ -99,20 +96,146 @@ const Calculator = (props) => {
   }, [searchTermStates, states]);
 
   useEffect(() => {
-    if (products) {
+    if (products && category) {
       const results = products.filter(
         (product) =>
         product.category_id == category.id &&
         (product.id.toString().includes(searchTermProducts.toLowerCase()) ||
         product.name.toLowerCase().includes(searchTermProducts.toLowerCase()))
       );
-      setSearchResultsProducts(results);
+      if(results.length)
+      {
+        setSearchResultsProducts(results);
+
+      }else
+      {
+        setSearchResultsProducts(null);
+
+      }
     }
   }, [searchTermProducts, products, category]);
 
   useEffect(() => {
-    console.log(categories);
-  }, [categories]);
+    if(state && product)
+    {
+      for (var key in state.categories) {
+        if (!state.categories.hasOwnProperty(key)) continue;
+        
+        if(key == category.name)
+        {
+          if(state.categories[key] == "blue")
+          {
+            if(state.categories[key+"N"] != "")
+            {
+              setTaxVal(parseFloat(state.categories[key+"N"]));
+            }else
+            {
+              console.log(state.tax);
+              setTaxVal(state.tax);
+            }
+            
+            
+          }else if(state.categories[key] == "green")
+          {
+            if(state.categories[key+"N"] != "")
+            {
+
+              if(parseFloat(state.categories[key+"N"])<priceOfSelling)
+              {
+                setTaxVal(state.tax);
+              }else
+              {
+                setTaxVal(0);
+              }
+              
+            }else
+            {
+              setTaxVal(0);
+            }
+          }else if(state.categories[key] == "red")
+          {
+            setTaxVal(0);
+          }
+          setSellingPriceNetto((priceOfSelling-(priceOfSelling*taxVal/100))*amountOfProducts);
+          setBuyingPriceBrutto((product.price+(product.price*taxVal/100))*amountOfProducts);
+          break;
+        }
+      }
+      
+    }
+    if(state && category)
+    {
+      for (var key in state.categories) {
+        if (!state.categories.hasOwnProperty(key)) continue;
+        
+        if(key == category.name)
+        {
+          
+          if(state.categories[key] == "blue")
+          {
+            setTaxValue(state.tax + "%");
+          }else if(state.categories[key] == "green")
+          {
+
+            setTaxValue("Exempt from taxes");
+          }else if(state.categories[key] == "red")
+          {
+            setTaxValue("No taxes");
+          }
+          break;
+        }
+      }
+    }
+  }, [state, category, amountOfProducts, priceOfSelling, costOfLogistics]);
+
+
+
+
+
+
+  const parseTable = (tables) => 
+  {
+    var results = [];
+    for (let i = 1; i < 54; i++) { 
+      var tempCateg = [];
+      for(let j = 3; j<9;j++)
+      {
+        if(tables[1].children[0].children[i].children[j])
+        {
+          if(tables[1].children[0].children[i].children[j].style.backgroundColor =="rgb(119, 136, 255)")
+          {
+            tempCateg.push("blue");
+            
+          }else if(tables[1].children[0].children[i].children[j].style.backgroundColor =="rgb(246, 43, 15)")
+          {
+            tempCateg.push("red");
+          }else if(tables[1].children[0].children[i].children[j].style.backgroundColor =="rgb(78, 224, 78)")
+          {
+            tempCateg.push("green");
+          }
+          tempCateg.push(tables[1].children[0].children[i].children[j].innerText.replace(/[^\d.]/g, ""));
+        }
+        
+      }
+      var categoriesArray = {'Groceries':tempCateg[0], "GroceriesN":tempCateg[1], 
+      "Prepared food": tempCateg[2], "Prepared foodN":tempCateg[3],
+      'Prescription drug':tempCateg[4], 'Prescription drugN':tempCateg[5],
+      "Non-prescription drug": tempCateg[6], "Non-prescription drugN": tempCateg[7],
+      'Clothing':tempCateg[8], 'ClothingN':tempCateg[9],
+      "Intagibles": tempCateg[10], "IntagiblesN": tempCateg[11]};
+      
+
+
+
+      results.push({id: i, name: tables[1].children[0].children[i].children[0].innerText,
+      tax: tables[1].children[0].children[i].children[1].innerText.replace(/\D+$/g, ""), 
+      categories: categoriesArray}); 
+    }
+    console.log(results);
+    setStates(results);
+
+  };
+
 
 
   return (
@@ -125,7 +248,7 @@ const Calculator = (props) => {
                     <FormControl
                         style = {{width: "98%"}}
                         autoFocus
-                        className="mx-3 my-2 w-auto"
+                        className="mx-3 my-2 w-auto shadow"
                         placeholder="Type to filter..."
                         onChange={(e) => setSearchTermStates(e.target.value)}
                         value={searchTermStates}
@@ -151,7 +274,7 @@ const Calculator = (props) => {
                 <FormControl
                         style = {{width: "98%"}}
                         autoFocus
-                        className="mx-3 my-2 w-auto"
+                        className="mx-3 my-2 w-auto shadow"
                         placeholder="Type to filter..."
                         onChange={(e) => setSearchTermCategories(e.target.value)}
                         value={searchTermCategories}
@@ -177,7 +300,7 @@ const Calculator = (props) => {
                 <FormControl
                         style = {{width: "98%"}}
                         autoFocus
-                        className="mx-3 my-2 w-auto"
+                        className="mx-3 my-2 w-auto shadow"
                         placeholder="Type to filter..."
                         onChange={(e) => setSearchTermProducts(e.target.value)}
                         value={searchTermProducts}
@@ -202,21 +325,101 @@ const Calculator = (props) => {
                 </Row>
             </Col>
             <Col className="priceColumn">
-            Amount of Products
-            <FormControl
-                        style = {{width: "98%"}}
+            <Jumbotron className="jumboman-price">
+              <Row>
+                <Col>
+                State: {state ? state.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                </Col>
+                
+                <Col>
+                Taxes: {state ? taxValue : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                </Col>
+                <Col>
+                Category: {category ? category.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"} {"\u00a0\u00a0\u00a0"} 
+                </Col>
+                <Col>
+                Product: {product ? product.name : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                </Col>
+
+              </Row>
+              <hr />
+              <Row xs={4} md={6} lg={8}>
+                <Col>Amount (pieces):
+                </Col>
+                <Col >
+                  <FormControl
                         autoFocus
                         className="mx-3 my-2 w-auto"
                         placeholder="Amount"
                         onChange={(e) => setAmountOfProducts(e.target.value)}
                         value={amountOfProducts}
                     />
-                    <br/>
-            <Jumbotron className="jumboman-price">
-                  <h1>Price</h1>
-                  <br/>
-                  {product && state && (<p>Price of {amountOfProducts} {product.name}s in {state.name} is {amountOfProducts*product.price} dollars</p>)}
-                      
+                </Col>
+              </Row>
+              <Row xs={4} md={6} lg={8}>
+                <Col>Price of selling (zł):
+                </Col>
+                <Col >
+                  <FormControl
+                        autoFocus
+                        className="mx-3 my-2 w-auto"
+                        placeholder="price"
+                        onChange={(e) => setPriceOfSelling(e.target.value)}
+                        value={priceOfSelling}
+                    />
+                </Col>
+              </Row>
+              <Row xs={4} md={6} lg={8}>
+                <Col>Cost of logistics (zł):
+                </Col>
+                <Col >
+                  <FormControl
+                        autoFocus
+                        className="mx-3 my-2 w-auto"
+                        placeholder="price"
+                        onChange={(e) => setCostOfLogistics(e.target.value)}
+                        value={costOfLogistics}
+                    />
+                </Col>
+              </Row>
+              <hr />
+              <Row>
+                <Col>
+                Started price(netto): {product ? product.price +"zł * "+ amountOfProducts +" pieces = "+ product.price*amountOfProducts +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                Started price(brutto): {product && state ? "( " + product.price +"zł + ( " + product.price +"zł * " + taxVal + "% )) * " + amountOfProducts +" pieces = "+ 
+                buyingPriceBrutto.toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>
+              <hr />
+              <Row>
+                <Col>
+                Selling price(netto): {product && state ? "( " + priceOfSelling +"zł - ( " + priceOfSelling +"zł * " + taxVal + "% )) * " + amountOfProducts +" pieces = "+ 
+                sellingPriceNetto.toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>
+              
+              <Row>
+                <Col>
+                Selling price(brutto): {product ? priceOfSelling +"zł * "+ amountOfProducts +" = "+ (priceOfSelling*amountOfProducts).toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>
+              <hr />
+              <Row>
+                <Col>
+                Profit: {product ? sellingPriceNetto.toFixed(2) +"zł - "+ costOfLogistics + "zł - "
+                 + buyingPriceBrutto.toFixed(2)  +"zł = "
+                 + (sellingPriceNetto-buyingPriceBrutto-costOfLogistics).toFixed(2) +" zł": "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
+                
+                </Col>
+              </Row>                 
             </Jumbotron>
             </Col>
           </Row>

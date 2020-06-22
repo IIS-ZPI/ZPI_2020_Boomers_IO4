@@ -1,7 +1,8 @@
 class ProductsController < ApplicationController
   before_action :set_category, except:[:index]
   before_action :set_product, only: [:show, :edit, :update, :destroy]
-
+  skip_before_action :verify_authenticity_token
+  
   # GET categories/1/products
   # GET categories/1/products.json
   def index
