@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
-import Accordion from 'react-bootstrap/Accordion';
-import Card from 'react-bootstrap/Card';
+import Accordion from "react-bootstrap/Accordion";
+import Card from "react-bootstrap/Card";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Container from "react-bootstrap/Container";
 import FormControl from "react-bootstrap/FormControl";
@@ -13,12 +13,14 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 
-
-
-
-
 function AddModal(props) {
-  const { addProduct, categories,setSelectedCategory, selectedCategory, ...rest } = props;
+  const {
+    addProduct,
+    categories,
+    setSelectedCategory,
+    selectedCategory,
+    ...rest
+  } = props;
   return (
     <Modal
       {...rest}
@@ -33,47 +35,44 @@ function AddModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group
-            controlId="formName"
-          >
+          <Form.Group controlId="formName">
             <Form.Label>Name</Form.Label>
             <Form.Control type="text" placeholder="Name" />
           </Form.Group>
-          <Form.Group
-            controlId="formPrice"
-          >
+          <Form.Group controlId="formPrice">
             <Form.Label>Price</Form.Label>
             <Form.Control type="text" placeholder="Price" />
           </Form.Group>
         </Form>
-        <Dropdown>{selectedCategory === null ? (
-          <Dropdown.Toggle block>Choose</Dropdown.Toggle>
-        ) : (
-          <Dropdown.Toggle block>{selectedCategory.name}</Dropdown.Toggle>
-        )}
-        <Dropdown.Menu>
-          <ul
-            style={{
-              overflowY: "scroll",
-              maxHeight: "200px",
-              margin: "0px",
-              padding: "0px",
-            }}
-          >
-            {categories &&
-              categories.map((category) => (
-                <Dropdown.Item
-                  key={category.id}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                  }}
-                >
-                  {category.name}
-                </Dropdown.Item>
-              ))}
-          </ul>
-        </Dropdown.Menu>
-      </Dropdown>
+        <Dropdown>
+          {selectedCategory === null ? (
+            <Dropdown.Toggle block>Choose</Dropdown.Toggle>
+          ) : (
+            <Dropdown.Toggle block>{selectedCategory.name}</Dropdown.Toggle>
+          )}
+          <Dropdown.Menu>
+            <ul
+              style={{
+                overflowY: "scroll",
+                maxHeight: "200px",
+                margin: "0px",
+                padding: "0px",
+              }}
+            >
+              {categories &&
+                categories.map((category) => (
+                  <Dropdown.Item
+                    key={category.id}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                    }}
+                  >
+                    {category.name}
+                  </Dropdown.Item>
+                ))}
+            </ul>
+          </Dropdown.Menu>
+        </Dropdown>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={props.onHide}>
@@ -97,12 +96,7 @@ function AddModal(props) {
 }
 
 function DeleteModal(props) {
-  const {
-    selectedProduct,
-    setSelectedProduct,
-    deleteProduct,
-    ...rest
-  } = props;
+  const { selectedProduct, setSelectedProduct, deleteProduct, ...rest } = props;
 
   if (props.selectedProduct) {
     return (
@@ -141,12 +135,6 @@ function DeleteModal(props) {
   } else return <></>;
 }
 
-
-
-
-
-
-
 const Products = (props) => {
   const [products, setProducts] = useState([]);
   const [searchTermProducts, setSearchTermProducts] = useState("");
@@ -169,7 +157,7 @@ const Products = (props) => {
         console.log(error);
       });
 
-      axios
+    axios
       .get("/categories")
       .then(function (response) {
         setCategories(response.data);
@@ -185,55 +173,51 @@ const Products = (props) => {
     if (products) {
       const results = products.filter(
         (product) =>
-        (product.id.toString().includes(searchTermProducts.toLowerCase()) ||
-        product.name.toLowerCase().includes(searchTermProducts.toLowerCase()))
+          product.id.toString().includes(searchTermProducts.toLowerCase()) ||
+          product.name.toLowerCase().includes(searchTermProducts.toLowerCase())
       );
-      if(results.length)
-      {
+      if (results.length) {
         setSearchResultsProducts(results);
-
-      }else
-      {
+      } else {
         setSearchResultsProducts(null);
-
       }
     }
   }, [searchTermProducts, products]);
-  
+
   const addProduct = (name, price) => {
-    const product = {name:name, price: parseFloat(price), category_id: selectedCategory.id};
-    const link = 'categories/' + selectedCategory.id + '/products';
+    const product = {
+      name: name,
+      price: parseFloat(price),
+      category_id: selectedCategory.id,
+    };
+    const link = "categories/" + selectedCategory.id + "/products";
     console.log(link);
-    axios
-    .post(link, {product})
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-        setProducts([...products, res.data]);
-      })
+    axios.post(link, { product }).then((res) => {
+      console.log(res);
+      console.log(res.data);
+      setProducts([...products, res.data]);
+    });
   };
 
   const deleteProduct = (product) => {
-    const link = 'categories/'+product.category_id + '/products/' + product.id
-    axios
-    .delete(link)
-    .then(res =>{
+    const link =
+      "categories/" + product.category_id + "/products/" + product.id;
+    axios.delete(link).then((res) => {
       console.log(res);
-    })
-    setProducts(currentProducts => currentProducts.filter((products) => products.id !== product.id));
+    });
+    setProducts((currentProducts) =>
+      currentProducts.filter((products) => products.id !== product.id)
+    );
   };
 
-  const getCategoryName = (category_id) => 
-  {
-    const result = categories.filter(category => category.id === category_id);
+  const getCategoryName = (category_id) => {
+    const result = categories.filter((category) => category.id === category_id);
     return result[0].name;
-  }
-
-
+  };
 
   return (
     <>
-    <AddModal
+      <AddModal
         show={addModalShow}
         onHide={() => {
           setAddModalShow(false);
@@ -252,104 +236,91 @@ const Products = (props) => {
         setSelectedProduct={setSelectedProduct}
         deleteProduct={deleteProduct}
       />
-    <Jumbotron className="jumboman2">
-        <Container fluid style={{maxwidth: '100%'}}>
+      <Jumbotron className="jumboman2">
+        <Container fluid style={{ maxwidth: "100%" }}>
           <FormControl
-                          style = {{width: "90vh"}}
-                          autoFocus
-                          className="shadow my-2 w-100"
-                          placeholder="Type to filter..."
-                          onChange={(e) => setSearchTermProducts(e.target.value)}
-                          value={searchTermProducts}
-                      />
+            style={{ width: "90vh" }}
+            autoFocus
+            className="shadow my-2 w-100"
+            placeholder="Type to filter..."
+            onChange={(e) => setSearchTermProducts(e.target.value)}
+            value={searchTermProducts}
+          />
           <Card className="bg-secondary text-white">
-                <Card.Header>
-                <Row>
-            <Col>
-              No.
-            </Col>
-            <Col>
-              Product name
-            </Col>
-            <Col>
-              Price
-            </Col>
-          </Row>
-                </Card.Header>
-              </Card>
-          
-          <Accordion defaultActiveKey="0"
-          style={{
-            overflowY: "scroll",
-            maxHeight: "70vh",
-          }}>
-            {products && searchResultsProducts && (
+            <Card.Header>
+              <Row>
+                <Col>No.</Col>
+                <Col>Product name</Col>
+                <Col>Price (dollars)</Col>
+              </Row>
+            </Card.Header>
+          </Card>
+
+          <Accordion
+            defaultActiveKey="0"
+            style={{
+              overflowY: "scroll",
+              maxHeight: "70vh",
+            }}
+          >
+            {products &&
+              searchResultsProducts &&
               searchResultsProducts.map((product) => (
-              <Card key={product.id}>
-                <Accordion.Toggle as={Card.Header} eventKey={product.id}>
-                  <Row>
-                    <Col>
-                      {product.id}
-                    </Col>
-                    <Col>
-                      {product.name}
-                    </Col>
-                    <Col>
-                    {product.price}
-                    </Col>
-                  </Row>
-                </Accordion.Toggle>
-                <Accordion.Collapse eventKey={product.id}>
-                  <Card.Body>
+                <Card key={product.id}>
+                  <Accordion.Toggle as={Card.Header} eventKey={product.id}>
                     <Row>
-                      <Col>
-                      <p>
-                      Category: {getCategoryName(product.category_id)}
-                      </p>
-                      <p>
-                      Name: {product.name}
-                      </p>
-                      <p>
-                      Price: {product.price}
-                      </p>
-                      </Col>
-                      <Col>
-                      <Button
-                        className="btn-danger"
-                        style={{float:"right"}}
-                        onClick={() => {
-                          setSelectedProduct(product);
-                          setDeleteModalShow(true);
-                          }}>
-                        {"\u00a0\u00a0\u00a0"}Delete{"\u00a0\u00a0\u00a0"}   
-                        </Button>
-                      </Col>
+                      <Col>{product.id}</Col>
+                      <Col>{product.name}</Col>
+                      <Col>{product.price + " $"}</Col>
                     </Row>
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey={product.id}>
+                    <Card.Body>
+                      <Row>
+                        <Col>
+                          <p>
+                            Category: {getCategoryName(product.category_id)}
+                          </p>
+                          <p>Name: {product.name}</p>
+                          <p>Price: {product.price}</p>
+                        </Col>
+                        <Col>
+                          <Button
+                            className="btn-danger"
+                            style={{ float: "right" }}
+                            onClick={() => {
+                              setSelectedProduct(product);
+                              setDeleteModalShow(true);
+                            }}
+                          >
+                            {"\u00a0\u00a0\u00a0"}Delete{"\u00a0\u00a0\u00a0"}
+                          </Button>
+                        </Col>
+                      </Row>
                     </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-              ))
-             )}
+                  </Accordion.Collapse>
+                </Card>
+              ))}
           </Accordion>
           <Card>
-                <Card.Header>
-                <Row>
-            <Col>
-            </Col>
-            <Col>
-            </Col>
-            <Col>
-              <Button
-              className="btn-success"
-              style={{float:"right"}}
-              onClick={() => setAddModalShow(true)}>
-               {"\u00a0\u00a0\u00a0"}ADD NEW{"\u00a0\u00a0\u00a0"}   
-              </Button>
-            </Col>
-          </Row>
-                </Card.Header>
-              </Card>
-        </Container></Jumbotron>
+            <Card.Header>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Button
+                    className="btn-success"
+                    style={{ float: "right" }}
+                    onClick={() => setAddModalShow(true)}
+                  >
+                    {"\u00a0\u00a0\u00a0"}ADD NEW{"\u00a0\u00a0\u00a0"}
+                  </Button>
+                </Col>
+              </Row>
+            </Card.Header>
+          </Card>
+        </Container>
+      </Jumbotron>
     </>
   );
 };
