@@ -245,11 +245,7 @@ const Calculator = (props) => {
                 {states && searchResultsStates && (
                   <ListGroup
                     style={{ overflowY: "scroll", maxHeight: "82vh" }}
-                    defaultActiveKey={
-                      searchTermStates.size === 0
-                        ? null
-                        : searchResultsStates[0].id
-                    }
+                    defaultActiveKey={searchResultsStates[0].id}
                     onSelect={(k) => setTool(k)}
                   >
                     {searchResultsStates.map((state) => (
@@ -279,11 +275,7 @@ const Calculator = (props) => {
                 {categories && searchResultsCategories && (
                   <ListGroup
                     style={{ overflowY: "scroll", maxHeight: "82vh" }}
-                    defaultActiveKey={
-                      searchTermCategories.size === 0
-                        ? null
-                        : searchResultsCategories[0].id
-                    }
+                    defaultActiveKey={searchResultsCategories[0].id}
                     onSelect={(k) => setTool(k)}
                   >
                     {searchResultsCategories.map((category) => (
@@ -313,11 +305,7 @@ const Calculator = (props) => {
                 {products && searchResultsProducts && (
                   <ListGroup
                     style={{ overflowY: "scroll", maxHeight: "82vh" }}
-                    defaultActiveKey={
-                      searchResultsProducts.size === 0
-                        ? null
-                        : searchResultsProducts[0].id
-                    }
+                    defaultActiveKey={searchResultsProducts[0].id}
                     onSelect={(k) => setTool(k)}
                   >
                     {searchResultsProducts.map((product) => (
