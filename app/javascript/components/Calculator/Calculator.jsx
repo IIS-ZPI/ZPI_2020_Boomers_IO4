@@ -397,11 +397,11 @@ const Calculator = (props) => {
                   Started price(netto):{" "}
                   {product
                     ? product.price +
-                      "zł * " +
+                      "$ * " +
                       amountOfProducts +
                       " pieces = " +
                       product.price * amountOfProducts +
-                      " zł"
+                      " $"
                     : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 </Col>
               </Row>
@@ -411,15 +411,15 @@ const Calculator = (props) => {
                   {product && state
                     ? "( " +
                       product.price +
-                      "zł + ( " +
+                      "$ + ( " +
                       product.price +
-                      "zł * " +
+                      "$ * " +
                       taxVal +
                       "% )) * " +
                       amountOfProducts +
                       " pieces = " +
                       buyingPriceBrutto.toFixed(2) +
-                      " zł"
+                      " $"
                     : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 </Col>
               </Row>
@@ -430,15 +430,15 @@ const Calculator = (props) => {
                   {product && state
                     ? "( " +
                       priceOfSelling +
-                      "zł - ( " +
+                      "$ - ( " +
                       priceOfSelling +
-                      "zł * " +
+                      "$ * " +
                       taxVal +
                       "% )) * " +
                       amountOfProducts +
                       " pieces = " +
                       sellingPriceNetto.toFixed(2) +
-                      " zł"
+                      " $"
                     : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 </Col>
               </Row>
@@ -448,11 +448,11 @@ const Calculator = (props) => {
                   Selling price(brutto):{" "}
                   {product
                     ? priceOfSelling +
-                      "zł * " +
+                      "$ * " +
                       amountOfProducts +
                       " = " +
                       (priceOfSelling * amountOfProducts).toFixed(2) +
-                      " zł"
+                      " $"
                     : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 </Col>
               </Row>
@@ -462,17 +462,17 @@ const Calculator = (props) => {
                   Profit:{" "}
                   {product
                     ? sellingPriceNetto.toFixed(2) +
-                      "zł - " +
+                      "$ - " +
                       costOfLogistics +
-                      "zł - " +
+                      "$ - " +
                       buyingPriceBrutto.toFixed(2) +
-                      "zł = " +
+                      "$ = " +
                       (
                         sellingPriceNetto -
                         buyingPriceBrutto -
                         costOfLogistics
                       ).toFixed(2) +
-                      " zł"
+                      " $"
                     : "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"}
                 </Col>
               </Row>
