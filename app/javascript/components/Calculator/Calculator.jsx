@@ -366,7 +366,7 @@ const Calculator = (props) => {
                 </Col>
               </Row>
               <Row xs={4} md={6} lg={8}>
-                <Col>Price of selling (zł):</Col>
+                <Col>Price of selling (dollar):</Col>
                 <Col>
                   <FormControl
                     autoFocus
@@ -379,7 +379,7 @@ const Calculator = (props) => {
                 </Col>
               </Row>
               <Row xs={4} md={6} lg={8}>
-                <Col>Cost of logistics (zł):</Col>
+                <Col>Cost of logistics (dollar):</Col>
                 <Col>
                   <FormControl
                     autoFocus
