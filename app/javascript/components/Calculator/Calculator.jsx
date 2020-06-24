@@ -359,6 +359,7 @@ const Calculator = (props) => {
                     autoFocus
                     className="mx-3 my-2 w-auto"
                     placeholder="Amount"
+                    type="number"
                     onChange={(e) => setAmountOfProducts(e.target.value)}
                     value={amountOfProducts}
                   />
@@ -371,6 +372,7 @@ const Calculator = (props) => {
                     autoFocus
                     className="mx-3 my-2 w-auto"
                     placeholder="price"
+                    type="number"
                     onChange={(e) => setPriceOfSelling(e.target.value)}
                     value={priceOfSelling}
                   />
@@ -383,6 +385,7 @@ const Calculator = (props) => {
                     autoFocus
                     className="mx-3 my-2 w-auto"
                     placeholder="price"
+                    type="number"
                     onChange={(e) => setCostOfLogistics(e.target.value)}
                     value={costOfLogistics}
                   />
